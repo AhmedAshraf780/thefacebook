@@ -1,0 +1,16 @@
+version: '3'
+
+
+tasks:
+  run:
+    cmds: 
+      - go run ./cmd/thefacebook/main.go
+  migrate:
+    cmds:
+      - dbmate up
+  rollback:
+    cmds:
+      - dbmate down
+  create-migration:
+    cmds:
+      - dbmate new {{.NAME}}
