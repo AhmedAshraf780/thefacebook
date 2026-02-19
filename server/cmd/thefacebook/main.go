@@ -11,6 +11,8 @@ import (
 
 	"github.com/AhmedAshraf780/thefacebook/internals/config"
 	"github.com/AhmedAshraf780/thefacebook/internals/database"
+	"github.com/AhmedAshraf780/thefacebook/internals/handlers"
+	"github.com/AhmedAshraf780/thefacebook/internals/repositories"
 	"github.com/AhmedAshraf780/thefacebook/internals/router"
 	"github.com/AhmedAshraf780/thefacebook/internals/server"
 )
@@ -31,14 +33,15 @@ func main() {
 
 	log.Println("Successfully connected to the database")
 
-	// 3. Initialize Server
-	srv := server.New(cfg)
+	srv := server.New(cfg, db)
 
-	// 4. Initialize Router
-	r := router.NewRouter(srv) // TODO: Pass db to router or services
+	repos := repositories.NewRepositories(srv)
+
+	handler := handlers.NewHandler(repos)
+
+	r := router.NewRouter(srv, handler) // TODO: Pass db to router or services
 	srv.SetupHttpServer(r)
 
-	// 5. Start Server
 	go func() {
 		log.Printf("Starting server on port %s", cfg.Server.Port)
 		if err := srv.Start(); err != nil && err != http.ErrServerClosed {

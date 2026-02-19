@@ -7,16 +7,19 @@ import (
 	"time"
 
 	"github.com/AhmedAshraf780/thefacebook/internals/config"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type Server struct {
 	HttpServer *http.Server
 	Config     *config.Config
+	Db         *pgxpool.Pool
 }
 
-func New(cfg *config.Config) *Server {
+func New(cfg *config.Config, db *pgxpool.Pool) *Server {
 	return &Server{
 		Config: cfg,
+		Db:     db,
 	}
 }
 
